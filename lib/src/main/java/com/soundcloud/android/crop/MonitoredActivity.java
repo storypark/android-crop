@@ -26,20 +26,20 @@ import java.util.ArrayList;
  */
 abstract class MonitoredActivity extends Activity {
 
-    private final ArrayList<LifeCycleListener> listeners = new ArrayList<LifeCycleListener>();
+    private final ArrayList<LifeCycleListener> listeners = new ArrayList<>();
 
-    public static interface LifeCycleListener {
-        public void onActivityCreated(MonitoredActivity activity);
-        public void onActivityDestroyed(MonitoredActivity activity);
-        public void onActivityStarted(MonitoredActivity activity);
-        public void onActivityStopped(MonitoredActivity activity);
+    public interface LifeCycleListener {
+        void onActivityCreated(MonitoredActivity activity);
+        void onActivityDestroyed(MonitoredActivity activity);
+        void onActivityStarted(MonitoredActivity activity);
+        void onActivityStopped(MonitoredActivity activity);
     }
 
     public static class LifeCycleAdapter implements LifeCycleListener {
-        public void onActivityCreated(MonitoredActivity activity) {}
-        public void onActivityDestroyed(MonitoredActivity activity) {}
-        public void onActivityStarted(MonitoredActivity activity) {}
-        public void onActivityStopped(MonitoredActivity activity) {}
+        @Override public void onActivityCreated(MonitoredActivity activity) {}
+        @Override public void onActivityDestroyed(MonitoredActivity activity) {}
+        @Override public void onActivityStarted(MonitoredActivity activity) {}
+        @Override public void onActivityStopped(MonitoredActivity activity) {}
     }
 
     public void addLifeCycleListener(LifeCycleListener listener) {
