@@ -2,6 +2,7 @@
 
     <style tools:ignore="NewApi" name="CustomTheme" parent="android:Theme.DeviceDefault">
         <item name="cropImageStyle">@style/Widget.CropImageView</item>
+        <item name="cropImageActionStyle">@style/Crop.ActionStyle</item>
     </style>
 
     <style name="Widget.CropImageView" parent="android:Widget">

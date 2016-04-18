@@ -18,6 +18,7 @@ package com.soundcloud.android.crop;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
@@ -30,8 +31,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -105,14 +110,43 @@ public class CropImageActivity extends MonitoredActivity {
             }
         });
 
-        findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+        TypedValue outValue = new TypedValue();
+        TypedArray attributes;
+        if (getTheme().resolveAttribute(R.attr.cropImageActionStyle, outValue, true)) {
+            attributes = obtainStyledAttributes(outValue.resourceId, R.styleable.CropImageActionView);
+        } else {
+            attributes = getTheme().obtainStyledAttributes(R.style.Crop_ActionStyle, R.styleable.CropImageActionView);
+        }
+        @LayoutRes int actionLayoutResId = -1;
+        @IdRes int cancelId = -1;
+        @IdRes int doneId = -1;
+        try {
+            actionLayoutResId = attributes.getResourceId(R.styleable.CropImageActionView_cropActionLayout, actionLayoutResId);
+            cancelId = attributes.getResourceId(R.styleable.CropImageActionView_cropActionCancelId, cancelId);
+            doneId = attributes.getResourceId(R.styleable.CropImageActionView_cropActionDoneId, doneId);
+        } finally {
+            attributes.recycle();
+        }
+        if (actionLayoutResId == -1
+                || cancelId == -1
+                || doneId == -1) {
+            throw new IllegalArgumentException(
+                    "Illegal theme (cropActionLayout=" + actionLayoutResId +
+                            ", cropActionCancelId=" + cancelId +
+                            ", cropActionDoneId=" + doneId + ")");
+        }
+
+        ViewGroup actionLayoutContainer = (ViewGroup) findViewById(R.id.done_cancel_bar);
+        getLayoutInflater().inflate(actionLayoutResId, actionLayoutContainer, true);
+
+        findViewById(cancelId).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 setResult(RESULT_CANCELED);
                 finish();
             }
         });
 
-        findViewById(R.id.btn_done).setOnClickListener(new View.OnClickListener() {
+        findViewById(doneId).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 onSaveClicked();
             }
