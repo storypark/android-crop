@@ -171,12 +171,7 @@ public class CropImageActivity extends MonitoredActivity {
 
         sourceUri = intent.getData();
         if (sourceUri != null) {
-            final File exifUri = RealPathUtil.getFile(this, sourceUri);
-            if (exifUri == null) {
-                exifRotation = 0;
-            } else {
-                exifRotation = CropUtil.getExifRotation(exifUri);
-            }
+            exifRotation = CropUtil.getExifRotation(getContentResolver(), sourceUri);
 
             InputStream is = null;
             try {
@@ -512,11 +507,6 @@ public class CropImageActivity extends MonitoredActivity {
             } finally {
                 CropUtil.closeSilently(outputStream);
             }
-
-            CropUtil.copyExifRotation(
-                    CropUtil.getFromMediaUri(this, getContentResolver(), sourceUri),
-                    CropUtil.getFromMediaUri(this, getContentResolver(), saveUri)
-            );
 
             setResultUri(this.saveUri, this.exifRotation);
         }
